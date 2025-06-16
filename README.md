@@ -1,6 +1,6 @@
 # Eightware Frontend
 
-A brief description of the project — for example, a login/signup system built with Next.js using custom hooks, React Testing Library, and API integration.
+Projeto de autenticação fullstack usando Next.js App Router, React Hook Form com validação Zod, React Query para gerenciamento de estado assíncrono, integração com API REST para login e signup via JWT, e testes com Jest e React Testing Library.
 
 ---
 
@@ -23,7 +23,6 @@ A brief description of the project — for example, a login/signup system built 
 - **Babel 7**
 - **PostCSS 8**
 - **tw-animate-css**
-- Others as needed
 
 ---
 
