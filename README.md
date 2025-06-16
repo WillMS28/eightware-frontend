@@ -125,3 +125,9 @@ We use Jest and React Testing Library to:
 To run the tests:
 
 ```bash
+npm run test
+```
+
+## 🧑 Author
+
+Made by William Miranda for the Eightware technical challenge.
