@@ -15,54 +15,26 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
-
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [error, setError] = useState("");
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
+  } = useForm({
     resolver: zodResolver(loginSchema),
   });
 
-  const mutation = useMutation({
-    mutationFn: async (data: LoginFormData) => {
-      const response = await axios.post("http://localhost:3000/login", {
-        user: data,
-      });
-      return response;
-    },
-    onSuccess: (response) => {
-      const token = response.headers["authorization"]?.replace("Bearer ", "");
-      if (token) {
-        localStorage.setItem("token", token);
-        alert("Login successful!");
-       
-      }
-    },
-    onError: () => {
-      setError("Invalid email or password");
-    },
-  });
-
-  const onSubmit = (data: LoginFormData) => {
-    mutation.mutate(data);
-  };
+  const { login, isLoading, isError } = useAuth();
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -75,7 +47,7 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit((data) => login(data))}
             className="flex flex-col gap-6"
           >
             <div className="grid gap-3">
@@ -90,7 +62,11 @@ export function LoginForm({
                 <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
             </div>
-            <div className="grid gap-3">       
+            <div className="grid gap-3">
+              <div className="flex items-center">
+                <Label htmlFor="password">Password</Label>
+             
+              </div>
               <Input id="password" type="password" {...register("password")} />
               {errors.password && (
                 <p className="text-sm text-red-500">
@@ -98,18 +74,13 @@ export function LoginForm({
                 </p>
               )}
             </div>
-            {error && (
-              <p className="text-sm text-red-500 text-center">{error}</p>
+            {isError && (
+              <p className="text-sm text-red-500 text-center">{isError}</p>
             )}
             <div className="flex flex-col gap-3">
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? "Logging in..." : "Login"}
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
-           
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}

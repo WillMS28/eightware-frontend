@@ -54,5 +54,6 @@ export const useAuth = () => {
     login: loginMutation.mutate,
     signup: signupMutation.mutate,
     isLoading: loginMutation.isPending || signupMutation.isPending,
+    isError: loginMutation.isError || signupMutation.isError,
   };
 };

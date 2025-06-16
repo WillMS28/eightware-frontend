@@ -15,9 +15,7 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 const signupSchema = z
   .object({
@@ -30,49 +28,19 @@ const signupSchema = z
     message: "Passwords must match",
   });
 
-type SignupFormData = z.infer<typeof signupSchema>;
-
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const [error, setError] = useState("");
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupFormData>({
+  } = useForm({
     resolver: zodResolver(signupSchema),
   });
 
-  const mutation = useMutation({
-    mutationFn: async (data: SignupFormData) => {
-      const response = await axios.post("http://localhost:3000/signup", {
-        user: {
-          email: data.email,
-          password: data.password,
-          password_confirmation: data.passwordConfirmation,
-        },
-      });
-      return response;
-    },
-    onSuccess: (response) => {
-      const token = response.headers["authorization"]?.replace("Bearer ", "");
-      if (token) {
-        localStorage.setItem("token", token);
-        alert("Signup successful!");
-       
-      }
-    },
-    onError: () => {
-      setError("Signup failed. Try again.");
-    },
-  });
-
-  const onSubmit = (data: SignupFormData) => {
-    mutation.mutate(data);
-  };
+  const { signup, isLoading, isError } = useAuth();
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -83,7 +51,14 @@ export function SignupForm({
         </CardHeader>
         <CardContent>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(
+              ({ email, password, passwordConfirmation }) =>
+                signup({
+                  email,
+                  password,
+                  password_confirmation: passwordConfirmation,
+                })
+            )}
             className="flex flex-col gap-6"
           >
             <div className="grid gap-3">
@@ -115,15 +90,11 @@ export function SignupForm({
                 </p>
               )}
             </div>
-            {error && (
-              <p className="text-sm text-red-500 text-center">{error}</p>
+            {isError && (
+              <p className="text-sm text-red-500 text-center">{isError}</p>
             )}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={mutation.isPending}
-            >
-              {mutation.isPending ? "Creating..." : "Create account"}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creating..." : "Create account"}
             </Button>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
