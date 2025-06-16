@@ -33,7 +33,7 @@ export const useAuth = () => {
       return res.data;
     },
     onSuccess: () => {
-      router.push("/dashboard"); // ou qualquer rota pós-login
+      router.push("/profile"); // ou qualquer rota pós-login
     },
     onError(error) {
       toast.error(error.message);
@@ -50,7 +50,7 @@ export const useAuth = () => {
       return res.data;
     },
     onSuccess: () => {
-      router.push("/dashboard");
+      router.push("/profile");
     },
   });
 

@@ -5,7 +5,7 @@ import { useLogout } from "@/hooks/useLogout";
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 
-export default function DashboardPage() {
+export default function ProfilePage() {
   const router = useRouter();
 
   const { data: user, isLoading, error } = useUser();
