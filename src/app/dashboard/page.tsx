@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/hooks/useLogout";
 import { useUser } from "@/hooks/useUser";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const router = useRouter();
