@@ -6,8 +6,8 @@ const config: Config = {
   roots: ["<rootDir>/src"], // ou "./" se seu código não está dentro de src
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-  transform: {
-    "^.+\\.(ts|tsx|js|jsx)$": "babel-jest",
+   transform: {
+    "^.+\\.(ts|tsx|js|jsx)$": ["babel-jest", { configFile: "./.babelrc.test.json" }],
   },
   testPathIgnorePatterns: ["/node_modules/", "/.next/"],
   moduleNameMapper: {
