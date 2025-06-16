@@ -3,13 +3,19 @@
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/hooks/useLogout";
 import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/router";
 
 export default function DashboardPage() {
+  const router = useRouter();
+
   const { data: user, isLoading, error } = useUser();
   const { logout } = useLogout();
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Not authorized</p>;
+  if (error) {
+    router.push("/unauthorized");
+    return null;
+  }
 
   return (
     <div className="p-6">
