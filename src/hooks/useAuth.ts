@@ -3,6 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { getPublicApi } from "@/services/api";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface AuthPayload {
   email: string;
@@ -33,6 +34,9 @@ export const useAuth = () => {
     },
     onSuccess: () => {
       router.push("/dashboard"); // ou qualquer rota pós-login
+    },
+    onError(error) {
+      toast.error(error.message);
     },
   });
 
