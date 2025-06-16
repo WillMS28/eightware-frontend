@@ -1,35 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { getSecureApi } from "@/services/api";
+import { Button } from "@/components/ui/button";
+import { useLogout } from "@/hooks/useLogout";
+import { useUser } from "@/hooks/useUser";
 
 export default function DashboardPage() {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const { data: user, isLoading, error } = useUser();
+  const { logout } = useLogout();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const api = getSecureApi();
-        const res = await api.get("/me");
-        setEmail(res.data.email);
-        setLoading(false);
-      } catch (_err) {
-        router.push("/login");
-      }
-    };
-
-    fetchUser();
-  }, [router]);
-
-  if (loading) return <p>Loading...</p>;
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Not authorized</p>;
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold">Welcome, {email}!</h1>
-      <p>This is a protected page.</p>
-    </main>
+    <div className="p-6">
+      <h1 className="text-xl font-semibold">Welcome, {user?.email}</h1>
+      <Button className="mt-4" onClick={logout}>
+        Logout
+      </Button>
+    </div>
   );
 }
